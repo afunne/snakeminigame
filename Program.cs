@@ -27,7 +27,7 @@ namespace Snake
             // ================================
             // MENU
             // ================================
-            sound.PlayLoop("sounds/menu.wav");  // ✅ menu soundtrack loop
+            sound.PlayLoop("../../../sounds/menu.wav");  // ✅ menu soundtrack loop
 
             Console.Clear();
             Console.WriteLine("=== SNAKE GAME ===");
@@ -36,6 +36,8 @@ namespace Snake
             Console.WriteLine("2 - Medium (default map)");
             Console.WriteLine("3 - Hard (random extra walls)");
             ConsoleKey key = Console.ReadKey().Key;
+
+            Console.Clear();
 
             // Default values
             int mapWidth = 80;

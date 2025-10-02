@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System;
 using System.Threading;
+using NAudio;
 using NAudio.Wave;
 
 namespace Snake
@@ -12,8 +13,8 @@ namespace Snake
     // This class manages background music and sound effects
     class SoundManager
     {
-        private WaveOutEvent outputDevice;
-        private AudioFileReader audioFile;
+        public WaveOutEvent outputDevice;
+        public AudioFileReader audioFile;
 
         // Play a background track in loop
         public void PlayLoop(string filePath)
