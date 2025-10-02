@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System;
+
 namespace Snake
 {
     class Point
@@ -12,9 +14,7 @@ namespace Snake
         public int y;
         public char sym;
 
-        public Point()
-        {
-        }
+        public Point() { }
 
         public Point(int x, int y, char sym)
         {
@@ -32,33 +32,22 @@ namespace Snake
 
         public void Move(int offset, Direction direction)
         {
-            if (direction == Direction.RIGHT)
-            {
-                x = x + offset;
-            }
-            else if (direction == Direction.LEFT)
-            {
-                x = x - offset;
-            }
-            else if (direction == Direction.UP)
-            {
-                y = y - offset;
-            }
-            else if (direction == Direction.DOWN)
-            {
-                y = y + offset;
-            }
+            if (direction == Direction.RIGHT) x += offset;
+            else if (direction == Direction.LEFT) x -= offset;
+            else if (direction == Direction.UP) y -= offset;
+            else if (direction == Direction.DOWN) y += offset;
         }
 
-        public bool IsHit(Point p)
-        {
-            return p.x == this.x && p.y == this.y;
-        }
+        public bool IsHit(Point p) => p.x == this.x && p.y == this.y;
 
         public void Draw()
         {
-            Console.SetCursorPosition(x, y);
-            Console.Write(sym);
+            try
+            {
+                Console.SetCursorPosition(x, y);
+                Console.Write(sym);
+            }
+            catch { }
         }
 
         public void Clear()
@@ -67,9 +56,7 @@ namespace Snake
             Draw();
         }
 
-        public override string ToString()
-        {
-            return x + ", " + y + ", " + sym;
-        }
+        public override string ToString() => $"{x}, {y}, {sym}";
     }
 }
+

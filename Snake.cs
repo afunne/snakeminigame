@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace Snake
 {
     class Snake : Figure
@@ -45,23 +49,17 @@ namespace Snake
         {
             var head = pList.Last();
             for (int i = 0; i < pList.Count - 2; i++)
-            {
                 if (head.IsHit(pList[i]))
                     return true;
-            }
             return false;
         }
 
         public void HandleKey(ConsoleKey key)
         {
-            if (key == ConsoleKey.LeftArrow)
-                direction = Direction.LEFT;
-            else if (key == ConsoleKey.RightArrow)
-                direction = Direction.RIGHT;
-            else if (key == ConsoleKey.DownArrow)
-                direction = Direction.DOWN;
-            else if (key == ConsoleKey.UpArrow)
-                direction = Direction.UP;
+            if (key == ConsoleKey.LeftArrow) direction = Direction.LEFT;
+            else if (key == ConsoleKey.RightArrow) direction = Direction.RIGHT;
+            else if (key == ConsoleKey.DownArrow) direction = Direction.DOWN;
+            else if (key == ConsoleKey.UpArrow) direction = Direction.UP;
         }
 
         public bool Eat(Point food)
@@ -73,8 +71,7 @@ namespace Snake
                 pList.Add(food);
                 return true;
             }
-            else
-                return false;
+            return false;
         }
     }
 }
