@@ -24,6 +24,8 @@ namespace Snake
             // ================================
             SoundManager sound = new SoundManager();
 
+            string difficulty = "Medium"; // default, will be changed when player chooses
+
             // ================================
             // MENU
             // ================================
@@ -52,6 +54,7 @@ namespace Snake
             // ================================
             if (key == ConsoleKey.D1)
             {
+                difficulty = "Easy";
                 mapWidth = 50;
                 mapHeight = 20;
                 scorePerFood = 10;
@@ -60,6 +63,7 @@ namespace Snake
             }
             else if (key == ConsoleKey.D2)
             {
+                difficulty = "Medium";
                 mapWidth = 80;
                 mapHeight = 25;
                 scorePerFood = 20;
@@ -68,6 +72,7 @@ namespace Snake
             }
             else if (key == ConsoleKey.D3)
             {
+                difficulty = "Hard";
                 mapWidth = 80;
                 mapHeight = 25;
                 scorePerFood = 30;
@@ -75,12 +80,19 @@ namespace Snake
                 sound.PlayLoop("sounds/hardmode.wav");   // ✅ hard soundtrack
             }
 
+
+
+
+
             // ================================
             // INIT GAME OBJECTS
             // ================================
+
+
             Walls walls = new Walls(mapWidth, mapHeight);
             walls.Draw();
 
+            // For hard mode – extra random walls
             // For hard mode – extra random walls
             if (key == ConsoleKey.D3)
             {
@@ -89,6 +101,7 @@ namespace Snake
                 {
                     int y = rnd.Next(3, mapHeight - 3);
                     HorizontalLine extraWall = new HorizontalLine(10, mapWidth - 10, y, '#');
+                    walls.AddWall(extraWall);   // ✅ add to wallList for collision
                     extraWall.Draw();
                 }
             }
@@ -106,41 +119,97 @@ namespace Snake
             // ================================
             // GAME LOOP
             // ================================
-            while (true)
+            if (difficulty == "Hard")
             {
-                // Collision detection
-                if (walls.IsHit(snake) || snake.IsHitTail())
+                BulletManager bulletManager = new BulletManager();
+                int tickCount = 0;
+
+                while (true)
                 {
-                    break;
+                    if (walls.IsHit(snake) || snake.IsHitTail() || bulletManager.CheckCollision(snake))
+                    {
+                        break; // Game Over
+                    }
+
+                    if (snake.Eat(food))
+                    {
+                        score += scorePerFood;
+                        sound.PlayOnce("sounds/eat.wav");
+
+                        food = foodCreator.CreateFood();
+                        food.Draw();
+
+                        Console.SetCursorPosition(0, 0);
+                        Console.Write($"Score: {score}   ");
+
+                        // 🎯 WIN CONDITION for Hard Mode
+                        if (score >= 100)
+                        {
+                            sound.Stop();
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            Console.WriteLine("🎉 YOU WIN! The boss is defeated!");
+                            Console.ResetColor();
+                            Thread.Sleep(4000);
+                            return; // exit game
+                        }
+                    }
+                    else
+                    {
+                        snake.Move();
+                    }
+
+                    // spawn bullets every few ticks
+                    tickCount++;
+                    if (tickCount % 10 == 0) // adjust frequency
+                    {
+                        bulletManager.SpawnBullet(mapWidth, mapHeight);
+                    }
+
+                    bulletManager.Update(mapWidth, mapHeight);
+
+                    Thread.Sleep(100);
+
+                    if (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo keyInfo = Console.ReadKey();
+                        snake.HandleKey(keyInfo.Key);
+                    }
                 }
-
-                if (snake.Eat(food))
+            }
+            else
+            {
+                // === NORMAL LOOP FOR EASY + MEDIUM ===
+                while (true)
                 {
-                    // update score
-                    score += scorePerFood;
+                    if (walls.IsHit(snake) || snake.IsHitTail())
+                    {
+                        break;
+                    }
 
-                    // 🎵 play eat sound
-                    sound.PlayOnce("sounds/eat.wav");
+                    if (snake.Eat(food))
+                    {
+                        score += scorePerFood;
+                        sound.PlayOnce("sounds/eat.wav");
 
-                    // spawn new food
-                    food = foodCreator.CreateFood();
-                    food.Draw();
+                        food = foodCreator.CreateFood();
+                        food.Draw();
 
-                    // draw score
-                    Console.SetCursorPosition(0, 0);
-                    Console.Write($"Score: {score}   ");
-                }
-                else
-                {
-                    snake.Move();
-                }
+                        Console.SetCursorPosition(0, 0);
+                        Console.Write($"Score: {score}   ");
+                    }
+                    else
+                    {
+                        snake.Move();
+                    }
 
-                Thread.Sleep(100);
+                    Thread.Sleep(100);
 
-                if (Console.KeyAvailable)
-                {
-                    ConsoleKeyInfo keyInfo = Console.ReadKey();
-                    snake.HandleKey(keyInfo.Key);
+                    if (Console.KeyAvailable)
+                    {
+                        ConsoleKeyInfo keyInfo = Console.ReadKey();
+                        snake.HandleKey(keyInfo.Key);
+                    }
                 }
             }
 
@@ -150,15 +219,76 @@ namespace Snake
             sound.Stop(); // stop background soundtrack
             WriteGameOver();
 
-            Console.Write("Enter your 3-letter name: ");
-            string name = Console.ReadLine().ToUpper();
-            if (name.Length > 3)
-                name = name.Substring(0, 3);
+            string name = "";
+            while (true)
+            {
+                Console.Write("Enter your 3-letter name: ");
+                name = Console.ReadLine().ToUpper().Trim();
 
-            Leaderboard.SaveScore(name, score);
+                // Check empty input
+                if (string.IsNullOrEmpty(name))
+                {
+                    Console.WriteLine("❌ You must enter a name.");
+                    continue;
+                }
+
+                // Check length
+                if (name.Length != 3)
+                {
+                    Console.WriteLine("❌ Name must be exactly 3 letters. Try again.");
+                    continue;
+                }
+
+                // Check only A–Z letters
+                bool onlyLetters = true;
+                foreach (char c in name)
+                {
+                    if (c < 'A' || c > 'Z')
+                    {
+                        onlyLetters = false;
+                        break;
+                    }
+                }
+
+                if (!onlyLetters)
+                {
+                    Console.WriteLine("❌ Name must contain only letters (A-Z). Try again.");
+                    continue;
+                }
+
+                break; // ✅ valid name
+            }
+
+            Leaderboard.SaveScore(name, score, difficulty);
             Leaderboard.ShowTopScores();
 
+
+
             Console.ReadLine();
+
+            // ================================
+            // ASK TO PLAY AGAIN
+            // ================================
+            Console.WriteLine();
+            ConsoleKey response;
+            while (true)
+            {
+                Console.Write("Do you want to play again? (Y/N): ");
+                response = Console.ReadKey(true).Key; // true to not show the key
+                if (response == ConsoleKey.Y || response == ConsoleKey.N)
+                    break; // valid input
+                Console.WriteLine(" ❌ Please press Y or N only.");
+            }
+
+            if (response == ConsoleKey.Y)
+            {
+                Console.Clear();
+                Main(args); // restart the game
+            }
+            else
+            {
+                return; // exit program
+            }
         }
 
         // ================================
@@ -183,6 +313,7 @@ namespace Snake
             Console.SetCursorPosition(xOffset, yOffset);
             Console.WriteLine(text);
         }
+
     }
 }
 

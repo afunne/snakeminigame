@@ -11,43 +11,55 @@ using System.Linq;
 
 namespace Snake
 {
-    static class Leaderboard
+    class Leaderboard
     {
-        private const string FileName = "leaderboard.txt";
+        private static string filePath = "leaderboard.txt";
 
-        public static void SaveScore(string name, int score)
+        public static void SaveScore(string name, int score, string difficulty)
         {
-            string entry = $"{name}:{score}:{DateTime.Now}";
-            File.AppendAllLines(FileName, new[] { entry });
+            string entry = $"{name} {score} {difficulty}";
+            File.AppendAllLines(filePath, new[] { entry });
         }
 
         public static void ShowTopScores()
         {
             Console.Clear();
-            Console.WriteLine("=== Leaderboard (Top 5) ===");
+            Console.WriteLine("===== LEADERBOARD =====");
 
-            if (!File.Exists(FileName))
+            if (!File.Exists(filePath))
             {
                 Console.WriteLine("No scores yet!");
                 return;
             }
 
-            var scores = File.ReadAllLines(FileName)
-                .Select(line =>
-                {
-                    var parts = line.Split(':');
-                    return new { Name = parts[0], Score = int.Parse(parts[1]), Date = parts[2] };
-                })
-                .OrderByDescending(s => s.Score)
-                .Take(5);
+            var scores = File.ReadAllLines(filePath)
+             .Select(line =>
+             {
+                 var parts = line.Split(' ');
+                 if (parts.Length < 3) return null; // skip old/bad entries
+
+                 int score;
+                 if (!int.TryParse(parts[1], out score)) return null; // skip invalid numbers
+
+                 return new
+                 {
+                     Name = parts[0],
+                     Score = score,
+                     Difficulty = parts[2]
+                 };
+             })
+             .Where(x => x != null) // remove skipped
+             .OrderByDescending(s => s.Score)
+             .Take(5);
 
             int rank = 1;
             foreach (var s in scores)
             {
-                Console.WriteLine($"{rank}. {s.Name} - {s.Score} pts ({s.Date})");
+                Console.WriteLine($"{rank}. {s.Name} - {s.Score} pts - {s.Difficulty}");
                 rank++;
             }
         }
     }
 }
+
 
