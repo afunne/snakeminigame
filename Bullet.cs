@@ -8,7 +8,7 @@ namespace Snake
 {
     class Bullet : Point
     {
-        private Direction direction;
+        public Direction direction;
 
         public Bullet(int x, int y, char sym, Direction direction) : base(x, y, sym)
         {

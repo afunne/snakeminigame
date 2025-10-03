@@ -20,7 +20,7 @@ namespace Snake
         public static void ShowTopScores()
         {
             Console.Clear();
-            Console.WriteLine("---- TULEMUSED ----");
+            Console.WriteLine("-__- TULEMUSED -__-");
 
             if (!File.Exists(filePath))
             {

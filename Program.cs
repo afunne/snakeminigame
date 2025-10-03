@@ -31,7 +31,7 @@ namespace Snake
             Console.WriteLine("Vali raskusaste:");
             Console.WriteLine("1 - Lihtne (väike kaart)");
             Console.WriteLine("2 - Keskmine (vaikimisi kaart)");
-            Console.WriteLine("3 - Raske (juhuslikud lisaseinad)");
+            Console.WriteLine("3 - Raske (juhuslikud lisaseinad|| THIS IS STILL IN WIP)");
             ConsoleKey key = Console.ReadKey().Key;
 
             Console.Clear();
@@ -130,7 +130,7 @@ namespace Snake
                             sound.Stop();
                             Console.Clear();
                             Console.ForegroundColor = ConsoleColor.Green;
-                            Console.WriteLine("🎉 YOU WIN! The boss is defeated!");
+                            Console.WriteLine("SINA VÕITSID! Boss on võidetud!");
                             Console.ResetColor();
                             Thread.Sleep(4000);
                             return; // exit game
@@ -281,7 +281,7 @@ namespace Snake
             yOffset++;
             WriteText("Author: Hussein Tahmazov aka afunne aka Husseinkchik aka afunnejoke", xOffset + 2, yOffset++);
             WriteText("============================", xOffset, yOffset++);
-            Console.ResetColor(); // yeah I wanted to add colors in the game didnt really work as i planned
+            Console.ResetColor();
         }
 
         static void WriteText(String text, int xOffset, int yOffset)
