@@ -31,7 +31,7 @@ namespace Snake
             Console.WriteLine("Vali raskusaste:");
             Console.WriteLine("1 - Lihtne (väike kaart)");
             Console.WriteLine("2 - Keskmine (vaikimisi kaart)");
-            Console.WriteLine("3 - Raske (juhuslikud lisaseinad|| THIS IS STILL IN WIP)");
+            Console.WriteLine("3 - Raske (juhuslikud lisaseinad || THIS IS STILL IN WIP)");
             ConsoleKey key = Console.ReadKey().Key;
 
             Console.Clear();
@@ -72,7 +72,11 @@ namespace Snake
 
                 sound.PlayLoop("sounds/hardmode.wav");
             }
-              
+            else
+            {
+                Console.WriteLine("Kuidas sa suutsid üheainsa tähe kirjutamisega nii palju sassi ajada? Ma olen pettunud 3:<");
+            }
+
             // walls go brrrrrrr
             Walls walls = new Walls(mapWidth, mapHeight);
             walls.Draw();
@@ -122,10 +126,10 @@ namespace Snake
                         food.Draw();
 
                         Console.SetCursorPosition(0, 0);
-                        Console.Write($"Score: {score}   ");
+                        Console.Write($"Punktid: {score}   ");
 
-                        // if the user gets at least 100 dolla dolla (this gamemode is hard as hell, Maksim dont try this)
-                        if (score >= 100)
+                        // if the user gets at least 90 dolla dolla (this gamemode is hard as hell, Maksim dont try this)
+                        if (score >= 90)
                         {
                             sound.Stop();
                             Console.Clear();
