@@ -11,6 +11,7 @@ using NAudio.Wave;
 namespace Snake
 {
     // This class manages background music and sound effects
+    // I wasted 2 days on this
     class SoundManager
     {
         public WaveOutEvent outputDevice;

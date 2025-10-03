@@ -54,7 +54,7 @@ namespace Snake
             return false;
         }
 
-        public void HandleKey(ConsoleKey key)
+        public void HandleKey(ConsoleKey key) // this part was modified with the help of Maksim Ts (thank u verrrrry much pokie :3)
         {
             if (key == ConsoleKey.LeftArrow && direction != Direction.RIGHT)
                 direction = Direction.LEFT;
@@ -65,6 +65,7 @@ namespace Snake
             else if (key == ConsoleKey.DownArrow && direction != Direction.UP)
                 direction = Direction.DOWN;
         }
+        // so this was made so snake doesnt kill itself then the user goes back
         public bool Eat(Point food)
         {
             Point head = GetNextPoint();

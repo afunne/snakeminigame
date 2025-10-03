@@ -3,11 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace Snake
 {
@@ -24,11 +20,11 @@ namespace Snake
         public static void ShowTopScores()
         {
             Console.Clear();
-            Console.WriteLine("===== LEADERBOARD =====");
+            Console.WriteLine("---- TULEMUSED ----");
 
             if (!File.Exists(filePath))
             {
-                Console.WriteLine("No scores yet!");
+                Console.WriteLine("Punkte pole veel!");
                 return;
             }
 
@@ -36,7 +32,7 @@ namespace Snake
              .Select(line =>
              {
                  var parts = line.Split(' ');
-                 if (parts.Length < 3) return null; // skip old/bad entries
+                 if (parts.Length < 3) return null; // skip old/bad entries aka bug fix
 
                  int score;
                  if (!int.TryParse(parts[1], out score)) return null; // skip invalid numbers

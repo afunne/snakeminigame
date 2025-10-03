@@ -19,24 +19,19 @@ namespace Snake
             Console.SetWindowSize(80, 25);
             Console.SetBufferSize(80, 25);
 
-            // ================================
-            // 🎵 INIT SOUND MANAGER
-            // ================================
-            SoundManager sound = new SoundManager();
+            
+            SoundManager sound = new SoundManager(); // sounds go br
 
-            string difficulty = "Medium"; // default, will be changed when player chooses
+            string difficulty = "Medium"; // default, will be changed when player chooses aka bug fix
 
-            // ================================
-            // MENU
-            // ================================
-            sound.PlayLoop("../../../sounds/menu.wav");  // ✅ menu soundtrack loop
+            sound.PlayLoop("../../../sounds/menu.wav");  // wow cool menu music
 
             Console.Clear();
-            Console.WriteLine("=== SNAKE GAME ===");
-            Console.WriteLine("Choose difficulty:");
-            Console.WriteLine("1 - Easy (small map)");
-            Console.WriteLine("2 - Medium (default map)");
-            Console.WriteLine("3 - Hard (random extra walls)");
+            Console.WriteLine("-_- MAO MÄNG (Hussein Tahmazov version) -_-");
+            Console.WriteLine("Vali raskusaste:");
+            Console.WriteLine("1 - Lihtne (väike kaart)");
+            Console.WriteLine("2 - Keskmine (vaikimisi kaart)");
+            Console.WriteLine("3 - Raske (juhuslikud lisaseinad)");
             ConsoleKey key = Console.ReadKey().Key;
 
             Console.Clear();
@@ -46,20 +41,18 @@ namespace Snake
             int mapHeight = 25;
             int scorePerFood = 20;
 
-            // Stop menu soundtrack
+            // Stop menu soundtrack then other sound comes in
             sound.Stop();
 
-            // ================================
-            // SELECT DIFFICULTY
-            // ================================
-            if (key == ConsoleKey.D1)
+
+            if (key == ConsoleKey.D1) // it is easier rather consoleread
             {
                 difficulty = "Easy";
                 mapWidth = 50;
                 mapHeight = 20;
                 scorePerFood = 10;
 
-                sound.PlayLoop("sounds/easymode.wav");   // ✅ easy soundtrack
+                sound.PlayLoop("sounds/easymode.wav");  
             }
             else if (key == ConsoleKey.D2)
             {
@@ -68,7 +61,7 @@ namespace Snake
                 mapHeight = 25;
                 scorePerFood = 20;
 
-                sound.PlayLoop("sounds/mediummode.wav"); // ✅ medium soundtrack
+                sound.PlayLoop("sounds/mediummode.wav");
             }
             else if (key == ConsoleKey.D3)
             {
@@ -77,23 +70,14 @@ namespace Snake
                 mapHeight = 25;
                 scorePerFood = 30;
 
-                sound.PlayLoop("sounds/hardmode.wav");   // ✅ hard soundtrack
+                sound.PlayLoop("sounds/hardmode.wav");
             }
-
-
-
-
-
-            // ================================
-            // INIT GAME OBJECTS
-            // ================================
-
-
+              
+            // walls go brrrrrrr
             Walls walls = new Walls(mapWidth, mapHeight);
             walls.Draw();
 
-            // For hard mode – extra random walls
-            // For hard mode – extra random walls
+            // For hard mode – extra random walls :P
             if (key == ConsoleKey.D3)
             {
                 Random rnd = new Random();
@@ -101,7 +85,7 @@ namespace Snake
                 {
                     int y = rnd.Next(3, mapHeight - 3);
                     HorizontalLine extraWall = new HorizontalLine(10, mapWidth - 10, y, '#');
-                    walls.AddWall(extraWall);   // ✅ add to wallList for collision
+                    walls.AddWall(extraWall);   // bug fix for cololision
                     extraWall.Draw();
                 }
             }
@@ -116,9 +100,7 @@ namespace Snake
 
             int score = 0;
 
-            // ================================
-            // GAME LOOP
-            // ================================
+            // hard mode loop
             if (difficulty == "Hard")
             {
                 BulletManager bulletManager = new BulletManager();
@@ -142,7 +124,7 @@ namespace Snake
                         Console.SetCursorPosition(0, 0);
                         Console.Write($"Score: {score}   ");
 
-                        // 🎯 WIN CONDITION for Hard Mode
+                        // if the user gets at least 100 dolla dolla (this gamemode is hard as hell, Maksim dont try this)
                         if (score >= 100)
                         {
                             sound.Stop();
@@ -159,7 +141,7 @@ namespace Snake
                         snake.Move();
                     }
 
-                    // spawn bullets every few ticks
+                    // spawn bullets every few ticks (its very buggy)
                     tickCount++;
                     if (tickCount % 10 == 0) // adjust frequency
                     {
@@ -179,7 +161,7 @@ namespace Snake
             }
             else
             {
-                // === NORMAL LOOP FOR EASY + MEDIUM ===
+                // other gamemodes loops
                 while (true)
                 {
                     if (walls.IsHit(snake) || snake.IsHitTail())
@@ -213,33 +195,31 @@ namespace Snake
                 }
             }
 
-            // ================================
-            // GAME OVER
-            // ================================
-            sound.Stop(); // stop background soundtrack
+            //uh oh u got pwned XD
+            sound.Stop(); // stops backround music
             WriteGameOver();
 
-            string name = "";
+            string name = ""; // bug fix
             while (true)
             {
-                Console.Write("Enter your 3-letter name: ");
+                Console.Write("Sisestage oma 3-täheline nimi: ");
                 name = Console.ReadLine().ToUpper().Trim();
 
-                // Check empty input
+                // Checks if thhere is nothing
                 if (string.IsNullOrEmpty(name))
                 {
-                    Console.WriteLine("❌ You must enter a name.");
+                    Console.WriteLine("Peate sisestama nime");
                     continue;
                 }
 
-                // Check length
+                // Checks length
                 if (name.Length != 3)
                 {
-                    Console.WriteLine("❌ Name must be exactly 3 letters. Try again.");
+                    Console.WriteLine("Nimi peab olema täpselt 3 tähemärki pikk. Proovi uuesti");
                     continue;
                 }
 
-                // Check only A–Z letters
+                // Checks if there is ONLY A–Z letters >:[
                 bool onlyLetters = true;
                 foreach (char c in name)
                 {
@@ -250,13 +230,13 @@ namespace Snake
                     }
                 }
 
-                if (!onlyLetters)
+                if (!onlyLetters) // if not true
                 {
-                    Console.WriteLine("❌ Name must contain only letters (A-Z). Try again.");
+                    Console.WriteLine("Nimi peab sisaldama ainult tähti (A-Z). Proovi uuesti");
                     continue;
                 }
 
-                break; // ✅ valid name
+                break; // valid name :D
             }
 
             Leaderboard.SaveScore(name, score, difficulty);
@@ -266,9 +246,7 @@ namespace Snake
 
             Console.ReadLine();
 
-            // ================================
-            // ASK TO PLAY AGAIN
-            // ================================
+            // pwetty please play again :3333
             Console.WriteLine();
             ConsoleKey response;
             while (true)
@@ -277,13 +255,13 @@ namespace Snake
                 response = Console.ReadKey(true).Key; // true to not show the key
                 if (response == ConsoleKey.Y || response == ConsoleKey.N)
                     break; // valid input
-                Console.WriteLine(" ❌ Please press Y or N only.");
+                Console.WriteLine("Palun vajutage ainult Y või N");
             }
 
             if (response == ConsoleKey.Y)
             {
                 Console.Clear();
-                Main(args); // restart the game
+                Main(args); // restart the game NOW!!!!
             }
             else
             {
@@ -291,9 +269,7 @@ namespace Snake
             }
         }
 
-        // ================================
-        // GAME OVER SCREEN
-        // ================================
+        // u ded
         static void WriteGameOver()
         {
             int xOffset = 25;
@@ -301,11 +277,11 @@ namespace Snake
             Console.ForegroundColor = ConsoleColor.Red;
             Console.SetCursorPosition(xOffset, yOffset++);
             WriteText("============================", xOffset, yOffset++);
-            WriteText("GAME OVER!", xOffset + 5, yOffset++);
+            WriteText("GAME OVER! :P", xOffset + 5, yOffset++);
             yOffset++;
-            WriteText("Author: Hussein Tahmazov", xOffset + 2, yOffset++);
+            WriteText("Author: Hussein Tahmazov aka afunne aka Husseinkchik aka afunnejoke", xOffset + 2, yOffset++);
             WriteText("============================", xOffset, yOffset++);
-            Console.ResetColor();
+            Console.ResetColor(); // yeah I wanted to add colors in the game didnt really work as i planned
         }
 
         static void WriteText(String text, int xOffset, int yOffset)
